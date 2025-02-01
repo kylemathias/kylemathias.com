@@ -36,66 +36,76 @@ let imageQueue = []; // Queue to track images
 let lastInvocationTime = performance.now(); // Using performance.now() for high-resolution time
 
 
-function addImage() {
-    var img = document.createElement('img');
+function createImage() {
+    const img = document.createElement('img');
     let randomIndex = Math.floor(Math.random() * images.length);
     img.src = images[randomIndex];
     img.classList.add('image');
-
+    
     // Calculate a random top position within visible bounds
     const maxHeight = window.innerHeight / 4;
     const minHeight = 75;
     const randomTop = Math.random() * (maxHeight - minHeight) + minHeight;
     img.style.top = `${randomTop}px`;
-
+    
     // Determine movement direction and set initial horizontal position accordingly
     if (Math.random() < 0.5) {
         img.classList.add('move-right-to-left');
-        // Spawn off to the right of the screen
         img.style.left = `${window.innerWidth}px`;
     } else {
         img.classList.add('move-left-to-right');
-        // Spawn off to the left of the screen using an arbitrary negative offset
         img.style.left = `-150px`;
     }
-
+    
     // Handle mouseover for custom tooltip
     img.addEventListener('mouseover', function() {
         showTooltip(img, imageNames[randomIndex]);
     });
-
+    
     // Handle mouseout to hide tooltip
     img.addEventListener('mouseout', function() {
         hideTooltip();
     });
-
-    // Handle click for explosion effect
+    
+    // Handle click for explosion effect and change graphic
     img.addEventListener('click', function() {
-        img.classList.add('exploded'); // Add the explosion animation class
-        setTimeout(() => { // Remove the image from the DOM after the animation completes
+        img.classList.add('exploded');
+        img.src = 'assets/icons8-explosion-96.png';
+        // Remove the image after explosion animation, then schedule the next image.
+        setTimeout(() => {
             if (img.parentNode) {
                 img.parentNode.removeChild(img);
             }
-        }, 500); // Matches the duration of the explosion animation
+            imageQueue = [];
+            showNextImage();
+        }, 500);
     });
-
-    img.addEventListener('click', function() {
-        // Change the image to an explosion graphic
-        img.src = 'assets/icons8-explosion-96.png'; // Path to your explosion graphic
-    });
-
-    document.getElementById('image-slider').appendChild(img);
-    imageQueue.push(img);
-
-    if (imageQueue.length > 1) {
-        setTimeout(() => {
-            let oldestImg = imageQueue.shift();
-            if (oldestImg.parentNode) {
-                oldestImg.parentNode.removeChild(oldestImg);
-            }
-        }, 60000); // Set to match the CSS animation duration
-    }
+    
+    return img;
 }
+
+function showNextImage() {
+    const slider = document.getElementById('image-slider');
+    // Remove any existing image
+    slider.innerHTML = '';
+    imageQueue = [];
+    
+    const img = createImage();
+    slider.appendChild(img);
+    imageQueue.push(img);
+    
+    // When the CSS animation ends (120s duration), remove the image and show the next one.
+    img.addEventListener('animationend', function() {
+        if (img.parentNode) {
+            img.parentNode.removeChild(img);
+        }
+        imageQueue = [];
+        showNextImage();
+    });
+}
+
+// Start the cycle
+showNextImage();
 
 
 
@@ -125,20 +135,3 @@ function hideTooltip() {
     }
 }
 
-// Initialize and continue the loop as you have it already set up.
-
-
-
-function scheduleNextImage() {
-    requestAnimationFrame(() => {
-        let currentTime = performance.now();
-        if (currentTime - lastInvocationTime >= 60000) { // Ensuring an image every 60 seconds
-            addImage();
-            lastInvocationTime = currentTime;
-        }
-        scheduleNextImage(); // Continue the loop
-    });
-}
-
-// Initialize the process
-scheduleNextImage(); // Starts the continuous scheduling of images

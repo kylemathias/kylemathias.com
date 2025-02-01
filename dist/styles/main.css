@@ -87,7 +87,7 @@ canvas {
   height: 20px; /* Adjust as needed */
   animation-duration: 120s; /* Adjust as needed */
   animation-timing-function: linear;
-  animation-iteration-count: infinite;
+  animation-iteration-count: 1;
 }
 
 .move-right-to-left {
