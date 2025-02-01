@@ -27,7 +27,7 @@
         var geometry, plane, simplex;
 
         var factor = 275,
-            speed = 0.001, // terrain size
+            speed = 0.0005, // terrain size
             cycle = 0.0000001, //move speed
             scale = 25; // smoothness
 
@@ -45,9 +45,9 @@
             //Scene
             scene = new THREE.Scene();
 
-            lights[0] = new THREE.PointLight(0x66ff99, 1, 0);
-            lights[1] = new THREE.PointLight(0x33cc66, 1, 0);
-            lights[2] = new THREE.PointLight(0x009933, 1, 0);
+            lights[0] = new THREE.PointLight(0x554488, 1, 0); // A mix of light blue and a hint of red
+            lights[1] = new THREE.PointLight(0x6655AA, 1, 0); // Similar, but slightly lighter and more purple
+            lights[2] = new THREE.PointLight(0x403366, 1, 0); 
 
             lights[0].position.set(0, 200, 0);
             lights[1].position.set(100, 200, 100);
@@ -82,7 +82,7 @@
                 blending: THREE.NoBlending,
                 side: THREE.FrontSide,
                 transparent: false,
-                depthTest: false,
+                depthTest: true,
                 wireframe: true
             });
             plane = new THREE.Mesh(geometry, material);
@@ -94,7 +94,29 @@
 
             group.add(plane);
             scene.add(group);
+// Starfield creation with adjusted depth
+var starGeometry = new THREE.Geometry();
+for (var i = 0; i < 10000; i++) {
+    var star = new THREE.Vector3();
+    star.x = THREE.Math.randFloatSpread(4000); // Spread in x
+    star.y = THREE.Math.randFloatSpread(2000); // Spread in y
+    // Adjust z to place stars far back
+    star.z = THREE.Math.randFloat(-3000, -1000);
 
+    starGeometry.vertices.push(star);
+}
+
+var starsMaterial = new THREE.PointsMaterial({
+    color: 0x888888,
+    size: 1,
+    sizeAttenuation: true,
+    transparent: true,
+    opacity: 0.8,
+    depthTest: true, // Enable depth testing to ensure correct layering
+    depthWrite: false // Avoid affecting the depth buffer to keep stars in the background
+});
+var starField = new THREE.Points(starGeometry, starsMaterial);
+scene.add(starField);
 
 
             // Fires when the window changes
@@ -129,9 +151,13 @@
 
 
         function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
+            // Ensure the camera's aspect ratio is updated based on the new dimensions
+            camera.aspect = document.body.clientWidth / window.innerHeight;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+        
+            // Set the renderer size to match the body's width and the window's height.
+            // This makes the canvas width responsive to the body element's width.
+            renderer.setSize(document.body.clientWidth, window.innerHeight);
         }
 
 
