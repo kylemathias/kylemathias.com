@@ -73,11 +73,19 @@ canvas {
 
 #image-slider {
   position: absolute;
-  top: 150px; /* Not above 150px */
-  bottom: 33%; /* Top 1/3 of the screen */
+  top: 0;
   left: 0;
-  right: 0;
-  width: 100%; /* Full width of the window */
+  width: 100%;
+  height: 33.33vh; /* Top 1/3 of the viewport */
+  overflow: hidden;
+}
+
+.title-banner {
+  position: absolute;
+  top: 33.33vh; /* Starts right after image-slider */
+  left: 0;
+  width: 100%;
+  height: 33.33vh; /* Next 1/3 of the viewport */
   overflow: hidden;
 }
 
@@ -106,4 +114,8 @@ canvas {
 @keyframes moveLeftToRight {
   0% { transform: translateX(-2vw) rotate(90deg); } /* Rotate right 90 degrees */
   100% { transform: translateX(200vw) rotate(90deg); }
+}
+
+.body-content{
+  z-index: 2;
 }
