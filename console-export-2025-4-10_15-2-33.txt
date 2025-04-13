@@ -1,0 +1,42 @@
+GET
+http://127.0.0.1:5500/assets/bootstrap.min.css
+NS_ERROR_CORRUPTED_CONTENT
+
+GET
+http://127.0.0.1:5500/assets/simplex-noise.min.js
+NS_ERROR_CORRUPTED_CONTENT
+
+GET
+http://127.0.0.1:5500/assets/three.min.js
+NS_ERROR_CORRUPTED_CONTENT
+
+GET
+http://127.0.0.1:5500/assets/bootstrap.min.js
+NS_ERROR_CORRUPTED_CONTENT
+
+GET
+http://127.0.0.1:5500/assets/popper.min.js
+NS_ERROR_CORRUPTED_CONTENT
+
+GET
+http://127.0.0.1:5500/assets/jquery.slim.min.js
+NS_ERROR_CORRUPTED_CONTENT
+
+The resource from “http://127.0.0.1:5500/assets/bootstrap.min.css” was blocked due to MIME type (“text/html”) mismatch (X-Content-Type-Options: nosniff). index.html
+The resource from “http://127.0.0.1:5500/assets/three.min.js” was blocked due to MIME type (“text/html”) mismatch (X-Content-Type-Options: nosniff). index.html
+The resource from “http://127.0.0.1:5500/assets/simplex-noise.min.js” was blocked due to MIME type (“text/html”) mismatch (X-Content-Type-Options: nosniff). index.html
+Loading failed for the <script> with source “http://127.0.0.1:5500/assets/three.min.js”. index.html:33:41
+Loading failed for the <script> with source “http://127.0.0.1:5500/assets/simplex-noise.min.js”. index.html:34:49
+The resource from “http://127.0.0.1:5500/assets/jquery.slim.min.js” was blocked due to MIME type (“text/html”) mismatch (X-Content-Type-Options: nosniff). index.html
+The resource from “http://127.0.0.1:5500/assets/popper.min.js” was blocked due to MIME type (“text/html”) mismatch (X-Content-Type-Options: nosniff). index.html
+The resource from “http://127.0.0.1:5500/assets/bootstrap.min.js” was blocked due to MIME type (“text/html”) mismatch (X-Content-Type-Options: nosniff). index.html
+Loading failed for the <script> with source “http://127.0.0.1:5500/assets/jquery.slim.min.js”. index.html:35:47
+Loading failed for the <script> with source “http://127.0.0.1:5500/assets/popper.min.js”. index.html:36:42
+Loading failed for the <script> with source “http://127.0.0.1:5500/assets/bootstrap.min.js”. index.html:37:45
+Uncaught ReferenceError: jQuery is not defined
+    <anonymous> http://127.0.0.1:5500/js/3d-hero-background.js:240
+3d-hero-background.js:240:4
+GET
+http://127.0.0.1:5500/favicon.ico
+[HTTP/1.1 404 Not Found 0ms]
+

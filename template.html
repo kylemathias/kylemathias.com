@@ -6,43 +6,31 @@
     <title>{title}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="./styles/main.css">
+    <link rel="stylesheet" href="./styles/template.css">
 </head>
 <body>
 
-    <nav>
-        <!-- Your navigation content here -->
-        <a href="index.html">Home</a> |
-        <a href="resume.html">Resume</a> |
-        <a href="contact.html">Contact</a>
-    </nav>
+    <!-- Navigation placeholder - will be replaced with dynamic navigation -->
+    <div id="nav-placeholder"></div>
 
-    <div id="page-content">
+    <div class="content-container" id="page-content">
         <!-- Content will be injected here -->
     </div>
       
     <footer-component></footer-component>
 
-  <!-- source code: https://codepen.io/Brahmam502/pen/gJagWj -->
-  <canvas id="3D-background-three-canvas5"></canvas>
+    <!-- source code: https://codepen.io/Brahmam502/pen/gJagWj -->
+    <canvas id="3D-background-three-canvas5"></canvas>
 
-          <!-- index.html -->
-      <div class="canvas-overlay">
-          <div id="image-slider"></div>
-          <div class="title-banner">
-              <h1>Kyle Mathias</h1>
-              <div class="nav-links">
-                <a class="nav-link" href="resume.html" id="resume-link">Resume</a>
-                <a class="nav-link" href="contact.html" id="contact-link">Contact</a>
-            </div>
-          </div>
-      </div>
-
+       <!-- Make sure these scripts are in this order at the bottom of your template.html file -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/103/three.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js'></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="./js/site-config.js"></script>
     <script src="./js/3d-hero-background.js"></script>
+    <script src="./js/template-injector.js"></script>
     <script src="./js/script.js"></script>
 </body>
 </html>

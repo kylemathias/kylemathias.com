@@ -1,22 +1,35 @@
-<!-- contact.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Contact</title>
-    <style>
-        body {
-            background-color: #000; 
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact | Kyle Mathias</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./styles/main.css">
+  <link rel="stylesheet" href="./styles/template.css">
 </head>
 <body>
-    <div id="page-content">
-        <!-- Content will be injected here -->
-    </div>
-    <script src="./js/template-injector.js"></script>
-    <script>
-        injectTemplate('contact');
-    </script>
+  <!-- Canvas for 3D background -->
+  <canvas id="3D-background-three-canvas5"></canvas>
+
+  <!-- Placeholder until scripts load -->
+  <div class="container mt-5">
+    <h1>Contact</h1>
+    <p>Loading contact information...</p>
+  </div>
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/103/three.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js'></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="./js/site-config.js"></script>
+  <script src="./js/3d-hero-background.js"></script>
+  <script src="./js/template-injector.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      injectTemplate('contact');
+    });
+  </script>
 </body>
 </html>

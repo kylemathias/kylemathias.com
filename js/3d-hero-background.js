@@ -1,6 +1,18 @@
 (function ($) {
   "use strict";
 
+  // Add this line to expose the init function globally
+  window.reinitialize3DBackground = function() {
+    init();
+    render();
+  };
+
+  $(function () {
+    // Your existing code...
+    //init();
+    //render();
+  });
+
   $(function () {
     var $window = $(window),
       windowWidth = window.innerWidth,
@@ -9,14 +21,26 @@
 
     // Check if the current page is the homepage
     function isHomepage() {
-      // Implement your logic to determine if it's the homepage
-      // For example, check if the current URL is the root URL
       let path = window.location.pathname;
-      return path === "/" || path === "/index.html"; // Check for both "/" and "/index.html"
+      return path === "/" || path === "/index.html" || path.endsWith("index.html");
     }
 
-    // Generate one plane geometries mesh to scene
-    //-------------------------------------
+ // Add this function near the top of your code
+function isTemplatePage() {
+  // Check if we're on a template page (resume.html or contact.html)
+  const path = window.location.pathname.split('/').pop();
+  return path === 'resume.html' || path === 'contact.html' || path.includes('template.html');
+}
+
+function isHomepage() {
+  const path = window.location.pathname.split('/').pop();
+  return path === '' || path === 'index.html';
+}
+
+// Make sure these functions are available to the rest of the code
+window.isTemplatePage = isTemplatePage;
+window.isHomepage = isHomepage;
+
     var camera,
       scene,
       material,
@@ -29,9 +53,9 @@
     var geometry, plane, simplex;
 
     var factor = 275,
-      speed = 0.0005, // terrain size
-      cycle = 0.0000001, //move speed
-      scale = 25; // smoothness
+      speed = 0.0005,
+      cycle = 0.0000001,
+      scale = 25;
 
     init();
     render();
@@ -49,9 +73,16 @@
       //Scene
       scene = new THREE.Scene();
 
-      lights[0] = new THREE.PointLight(0x554488, 1, 0); // A mix of light blue and a hint of red
-      lights[1] = new THREE.PointLight(0x6655aa, 1, 0); // Similar, but slightly lighter and more purple
-      lights[2] = new THREE.PointLight(0x403366, 1, 0);
+      // Different lighting for template pages vs home page
+      if (isTemplatePage()) {
+        lights[0] = new THREE.PointLight(0x554488, 0.8, 0); 
+        lights[1] = new THREE.PointLight(0x6655aa, 0.8, 0);
+        lights[2] = new THREE.PointLight(0x403366, 0.8, 0);
+      } else {
+        lights[0] = new THREE.PointLight(0x554488, 1, 0);
+        lights[1] = new THREE.PointLight(0x6655aa, 1, 0);
+        lights[2] = new THREE.PointLight(0x403366, 1, 0);
+      }
 
       lights[0].position.set(0, 200, 0);
       lights[1].position.set(100, 200, 100);
@@ -63,38 +94,49 @@
 
       //WebGL Renderer
       renderer = new THREE.WebGLRenderer({
-        canvas: document.getElementById(rendererCanvasID), //canvas
+        canvas: document.getElementById(rendererCanvasID), 
         alpha: true,
         antialias: true,
       });
       renderer.setSize(windowWidth, windowHeight);
 
-      // Starfield creation with adjusted depth
+      // Enhanced starfield that's visible on all pages
       var starGeometry = new THREE.Geometry();
-      for (var i = 0; i < 10000; i++) {
+      // More stars for template pages
+      var starCount = isTemplatePage() ? 15000 : 10000;
+      
+      for (var i = 0; i < starCount; i++) {
         var star = new THREE.Vector3();
-        star.x = THREE.Math.randFloatSpread(4000); // Spread in x
-        star.y = THREE.Math.randFloatSpread(2000); // Spread in y
-        // Adjust z to place stars far back
-        star.z = THREE.Math.randFloat(-3000, -1000);
-
+        star.x = THREE.Math.randFloatSpread(4000); 
+        star.y = THREE.Math.randFloatSpread(2000);
+        
+        // Adjust z-depth for template pages
+        if (isTemplatePage()) {
+          // Bring stars closer on template pages
+          star.z = THREE.Math.randFloat(-2000, -500);
+        } else {
+          star.z = THREE.Math.randFloat(-3000, -1000);
+        }
+        
         starGeometry.vertices.push(star);
       }
 
+      // Different star appearance for template pages
       var starsMaterial = new THREE.PointsMaterial({
-        color: 0x888888,
-        size: 1,
+        color: isTemplatePage() ? 0x9999ff : 0x888888,  // Bluer stars on template pages
+        size: isTemplatePage() ? 1.3 : 1,
         sizeAttenuation: true,
         transparent: true,
-        opacity: 0.8,
-        depthTest: true, // Enable depth testing to ensure correct layering
-        depthWrite: true, // Avoid affecting the depth buffer to keep stars in the background
+        opacity: isTemplatePage() ? 0.9 : 0.8,
+        depthTest: true,
+        depthWrite: true,
       });
+      
       var starField = new THREE.Points(starGeometry, starsMaterial);
       scene.add(starField);
 
+      // Only add terrain on the homepage
       if (isHomepage()) {
-        // Immediately use the texture for material creation
         group = new THREE.Object3D();
         group.position.set(0, -300, -1000);
         group.rotation.set(29.8, 0, 0);
@@ -119,40 +161,47 @@
         scene.add(group);
       }
 
-      // Fires when the window changes
+      // Add slow camera movement for template pages
+      if (isTemplatePage()) {
+        camera.position.z = 150;  // Position camera a bit further back
+      }
+
       window.addEventListener("resize", onWindowResize, false);
     }
+
+    // Variables for camera movement on template pages
+    var cameraMovementAngle = 0;
 
     function render() {
       requestAnimationFrame(render);
 
       var delta = clock.getDelta();
-
-      //To set a background color.
+      
       renderer.setClearColor(0x000000);
 
       if (isHomepage()) {
-        //change noise values over time
+        // Home page gets the terrain animation
         moveNoise();
+      } else if (isTemplatePage()) {
+        // Template pages get subtle camera movement
+        cameraMovementAngle += delta * 0.1;
+        camera.position.x = Math.sin(cameraMovementAngle) * 10;
+        camera.position.y = Math.cos(cameraMovementAngle) * 5;
+        camera.lookAt(0, 0, -1000);
       }
 
-      //update sprite
       cycle -= delta * 0.1;
-
       renderer.render(scene, camera);
     }
 
     function onWindowResize() {
-      // Ensure the camera's aspect ratio is updated based on the new dimensions
       camera.aspect = document.body.clientWidth / window.innerHeight;
       camera.updateProjectionMatrix();
-
-      // Set the renderer size to match the body's width and the window's height.
-      // This makes the canvas width responsive to the body element's width.
       renderer.setSize(document.body.clientWidth, window.innerHeight);
     }
 
     function moveNoise() {
+      // Existing moveNoise function
       var _iteratorNormalCompletion2 = true;
       var _didIteratorError2 = false;
       var _iteratorError2 = undefined;
