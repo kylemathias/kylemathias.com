@@ -7,178 +7,200 @@
     render();
   };
 
-  $(function () {
-    // Your existing code...
-    //init();
-    //render();
+  // Use a progressive loading approach
+  document.addEventListener('DOMContentLoaded', function() {
+    // Only initialize if the canvas element exists
+    if (document.getElementById('3D-background-three-canvas5')) {
+      // First render the page, then load the heavy 3D effect
+      setTimeout(function() {
+        init();
+        render();
+      }, 500); // Increased delay to prioritize other content
+    }
   });
 
-  $(function () {
-    var $window = $(window),
-      windowWidth = window.innerWidth,
-      windowHeight = window.innerHeight,
-      rendererCanvasID = "3D-background-three-canvas5";
+  var $window = $(window),
+    windowWidth = window.innerWidth,
+    windowHeight = window.innerHeight,
+    rendererCanvasID = "3D-background-three-canvas5";
 
-    // Check if the current page is the homepage
-    function isHomepage() {
-      let path = window.location.pathname;
-      return path === "/" || path === "/index.html" || path.endsWith("index.html");
+  // More efficient page type detection
+  function isTemplatePage() {
+    const path = window.location.pathname.split('/').pop();
+    return path === 'resume.html' || path === 'contact.html' || path.includes('template.html');
+  }
+
+  function isHomepage() {
+    const path = window.location.pathname.split('/').pop();
+    return path === '' || path === 'index.html';
+  }
+
+  // Make sure these functions are available to the rest of the code
+  window.isTemplatePage = isTemplatePage;
+  window.isHomepage = isHomepage;
+
+  var camera,
+    scene,
+    material,
+    group,
+    lights = [],
+    renderer,
+    shaderSprite,
+    clock = new THREE.Clock();
+
+  var geometry, plane, simplex;
+
+  // Significantly reduced values for better performance
+  var factor = 300,
+    speed = 0.0003,  // Reduced for better performance
+    cycle = 0.0000001,
+    scale = 20;      // Reduced complexity
+
+  // Further reduce star count for better performance
+  var starCount = isTemplatePage() ? 5000 : 3500;
+
+  function init() {
+    //camera
+    camera = new THREE.PerspectiveCamera(
+      60,
+      windowWidth / windowHeight,
+      1,
+      10000
+    );
+    camera.position.set(0, 0, 100);
+
+    //Scene
+    scene = new THREE.Scene();
+
+    // Different lighting for template pages vs home page - with reduced intensity
+    if (isTemplatePage()) {
+      lights[0] = new THREE.PointLight(0x554488, 0.7, 0); 
+      lights[1] = new THREE.PointLight(0x6655aa, 0.7, 0);
+      lights[2] = new THREE.PointLight(0x403366, 0.7, 0);
+    } else {
+      lights[0] = new THREE.PointLight(0x554488, 0.8, 0);
+      lights[1] = new THREE.PointLight(0x6655aa, 0.8, 0);
+      lights[2] = new THREE.PointLight(0x403366, 0.8, 0);
     }
 
- // Add this function near the top of your code
-function isTemplatePage() {
-  // Check if we're on a template page (resume.html or contact.html)
-  const path = window.location.pathname.split('/').pop();
-  return path === 'resume.html' || path === 'contact.html' || path.includes('template.html');
-}
+    lights[0].position.set(0, 200, 0);
+    lights[1].position.set(100, 200, 100);
+    lights[2].position.set(-100, -200, -100);
 
-function isHomepage() {
-  const path = window.location.pathname.split('/').pop();
-  return path === '' || path === 'index.html';
-}
+    scene.add(lights[0]);
+    scene.add(lights[1]);
+    scene.add(lights[2]);
 
-// Make sure these functions are available to the rest of the code
-window.isTemplatePage = isTemplatePage;
-window.isHomepage = isHomepage;
+    //WebGL Renderer with optimized parameters
+    renderer = new THREE.WebGLRenderer({
+      canvas: document.getElementById(rendererCanvasID), 
+      alpha: true,
+      antialias: false,  // False for better performance
+      precision: 'mediump', // Medium precision for better performance
+      powerPreference: 'high-performance',
+      preserveDrawingBuffer: false // Better performance
+    });
+    renderer.setSize(windowWidth, windowHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Limit pixel ratio for performance
 
-    var camera,
-      scene,
-      material,
-      group,
-      lights = [],
-      renderer,
-      shaderSprite,
-      clock = new THREE.Clock();
-
-    var geometry, plane, simplex;
-
-    var factor = 275,
-      speed = 0.0005,
-      cycle = 0.0000001,
-      scale = 25;
-
-    init();
-    render();
-
-    function init() {
-      //camera
-      camera = new THREE.PerspectiveCamera(
-        60,
-        windowWidth / windowHeight,
-        1,
-        10000
-      );
-      camera.position.set(0, 0, 100);
-
-      //Scene
-      scene = new THREE.Scene();
-
-      // Different lighting for template pages vs home page
+    // Enhanced starfield that's visible on all pages - with reduced complexity
+    var starGeometry = new THREE.Geometry();
+    
+    for (var i = 0; i < starCount; i++) {
+      var star = new THREE.Vector3();
+      star.x = THREE.Math.randFloatSpread(4000); 
+      star.y = THREE.Math.randFloatSpread(2000);
+      
+      // Adjust z-depth for template pages
       if (isTemplatePage()) {
-        lights[0] = new THREE.PointLight(0x554488, 0.8, 0); 
-        lights[1] = new THREE.PointLight(0x6655aa, 0.8, 0);
-        lights[2] = new THREE.PointLight(0x403366, 0.8, 0);
+        // Bring stars closer on template pages
+        star.z = THREE.Math.randFloat(-2000, -500);
       } else {
-        lights[0] = new THREE.PointLight(0x554488, 1, 0);
-        lights[1] = new THREE.PointLight(0x6655aa, 1, 0);
-        lights[2] = new THREE.PointLight(0x403366, 1, 0);
+        star.z = THREE.Math.randFloat(-3000, -1000);
       }
-
-      lights[0].position.set(0, 200, 0);
-      lights[1].position.set(100, 200, 100);
-      lights[2].position.set(-100, -200, -100);
-
-      scene.add(lights[0]);
-      scene.add(lights[1]);
-      scene.add(lights[2]);
-
-      //WebGL Renderer
-      renderer = new THREE.WebGLRenderer({
-        canvas: document.getElementById(rendererCanvasID), 
-        alpha: true,
-        antialias: true,
-      });
-      renderer.setSize(windowWidth, windowHeight);
-
-      // Enhanced starfield that's visible on all pages
-      var starGeometry = new THREE.Geometry();
-      // More stars for template pages
-      var starCount = isTemplatePage() ? 15000 : 10000;
       
-      for (var i = 0; i < starCount; i++) {
-        var star = new THREE.Vector3();
-        star.x = THREE.Math.randFloatSpread(4000); 
-        star.y = THREE.Math.randFloatSpread(2000);
-        
-        // Adjust z-depth for template pages
-        if (isTemplatePage()) {
-          // Bring stars closer on template pages
-          star.z = THREE.Math.randFloat(-2000, -500);
-        } else {
-          star.z = THREE.Math.randFloat(-3000, -1000);
-        }
-        
-        starGeometry.vertices.push(star);
-      }
-
-      // Different star appearance for template pages
-      var starsMaterial = new THREE.PointsMaterial({
-        color: isTemplatePage() ? 0x9999ff : 0x888888,  // Bluer stars on template pages
-        size: isTemplatePage() ? 1.3 : 1,
-        sizeAttenuation: true,
-        transparent: true,
-        opacity: isTemplatePage() ? 0.9 : 0.8,
-        depthTest: true,
-        depthWrite: true,
-      });
-      
-      var starField = new THREE.Points(starGeometry, starsMaterial);
-      scene.add(starField);
-
-      // Only add terrain on the homepage
-      if (isHomepage()) {
-        group = new THREE.Object3D();
-        group.position.set(0, -300, -1000);
-        group.rotation.set(29.8, 0, 0);
-
-        geometry = new THREE.PlaneGeometry(4000, 2000, 128, 64);
-        material = new THREE.MeshLambertMaterial({
-          color: 0xffffff,
-          opacity: 1,
-          blending: THREE.NoBlending,
-          side: THREE.FrontSide,
-          transparent: false,
-          depthTest: true,
-          wireframe: true,
-        });
-        plane = new THREE.Mesh(geometry, material);
-        plane.position.set(0, 0, 0);
-
-        simplex = new SimplexNoise();
-        moveNoise();
-
-        group.add(plane);
-        scene.add(group);
-      }
-
-      // Add slow camera movement for template pages
-      if (isTemplatePage()) {
-        camera.position.z = 150;  // Position camera a bit further back
-      }
-
-      window.addEventListener("resize", onWindowResize, false);
+      starGeometry.vertices.push(star);
     }
 
-    // Variables for camera movement on template pages
-    var cameraMovementAngle = 0;
+    // Different star appearance for template pages
+    var starsMaterial = new THREE.PointsMaterial({
+      color: isTemplatePage() ? 0x9999ff : 0x888888,
+      size: isTemplatePage() ? 1.2 : 1,
+      sizeAttenuation: true,
+      transparent: true,
+      opacity: isTemplatePage() ? 0.8 : 0.7,
+      depthTest: true,
+      depthWrite: false, // Better for transparent objects performance
+    });
+    
+    var starField = new THREE.Points(starGeometry, starsMaterial);
+    scene.add(starField);
 
-    function render() {
-      requestAnimationFrame(render);
+    // Only add terrain on the homepage
+    if (isHomepage()) {
+      group = new THREE.Object3D();
+      group.position.set(0, -300, -1000);
+      group.rotation.set(29.8, 0, 0);
 
+      // Significantly reduced geometry complexity for better performance
+      geometry = new THREE.PlaneGeometry(4000, 2000, 64, 32); // Further reduced segments
+      material = new THREE.MeshLambertMaterial({
+        color: 0xffffff,
+        opacity: 1,
+        blending: THREE.NoBlending,
+        side: THREE.FrontSide,
+        transparent: false,
+        depthTest: true,
+        wireframe: true,
+      });
+      plane = new THREE.Mesh(geometry, material);
+      plane.position.set(0, 0, 0);
+
+      simplex = new SimplexNoise();
+      moveNoise();
+
+      group.add(plane);
+      scene.add(group);
+    }
+
+    // Add slow camera movement for template pages
+    if (isTemplatePage()) {
+      camera.position.z = 150;  // Position camera a bit further back
+    }
+
+    // Throttled event listener for better performance
+    let resizeTimeout;
+    window.addEventListener("resize", function() {
+      if (!resizeTimeout) {
+        resizeTimeout = setTimeout(function() {
+          resizeTimeout = null;
+          onWindowResize();
+        }, 200); // Increased delay for throttling
+      }
+    }, false);
+  }
+
+  // Variables for camera movement on template pages
+  var cameraMovementAngle = 0;
+  var lastFrameTime = 0;
+  var fps = 30; // Limit to 30fps for better performance
+  var fpsInterval = 1000 / fps;
+
+  function render(timestamp) {
+    requestAnimationFrame(render);
+
+    // Throttle to desired fps for better performance
+    if (!timestamp) timestamp = 0;
+    var elapsed = timestamp - lastFrameTime;
+    
+    if (elapsed > fpsInterval) {
+      lastFrameTime = timestamp - (elapsed % fpsInterval);
+      
+      // Actual rendering code
       var delta = clock.getDelta();
       
       renderer.setClearColor(0x000000);
-
+  
       if (isHomepage()) {
         // Home page gets the terrain animation
         moveNoise();
@@ -189,52 +211,30 @@ window.isHomepage = isHomepage;
         camera.position.y = Math.cos(cameraMovementAngle) * 5;
         camera.lookAt(0, 0, -1000);
       }
-
+  
       cycle -= delta * 0.1;
       renderer.render(scene, camera);
     }
+  }
 
-    function onWindowResize() {
-      camera.aspect = document.body.clientWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(document.body.clientWidth, window.innerHeight);
+  function onWindowResize() {
+    windowWidth = window.innerWidth;
+    windowHeight = window.innerHeight;
+    camera.aspect = windowWidth / windowHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(windowWidth, windowHeight);
+  }
+
+  function moveNoise() {
+    for (let i = 0; i < geometry.vertices.length; i++) {
+      let vertex = geometry.vertices[i];
+      let xoff = vertex.x / factor;
+      let yoff = vertex.y / factor + cycle;
+      let rand = simplex.noise2D(xoff, yoff) * scale;
+      vertex.z = rand;
     }
-
-    function moveNoise() {
-      // Existing moveNoise function
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (
-          var _iterator2 = geometry.vertices[Symbol.iterator](), _step2;
-          !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done);
-          _iteratorNormalCompletion2 = true
-        ) {
-          var vertex = _step2.value;
-          var xoff = vertex.x / factor;
-          var yoff = vertex.y / factor + cycle;
-          var rand = simplex.noise2D(xoff, yoff) * scale;
-          vertex.z = rand;
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-
-      geometry.verticesNeedUpdate = true;
-      cycle += speed;
-    }
-  });
+    
+    geometry.verticesNeedUpdate = true;
+    cycle += speed;
+  }
 })(jQuery);

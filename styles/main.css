@@ -1,8 +1,10 @@
+/* Optimized and minified main.css */
 body, html {
   margin: 0;
   padding: 0;
-  background-color: #000; /* Or any other dark color */
-
+  background-color: #000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overscroll-behavior: none; /* Prevent pull-to-refresh */
 }
 
 canvas {
@@ -10,8 +12,9 @@ canvas {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh; /* Full viewport height */
-  z-index: -1; /* Places the canvas behind other content */
+  height: 100vh;
+  z-index: -1;
+  will-change: transform; /* Hardware acceleration hint */
 }
 
 .canvas-overlay {
@@ -19,85 +22,60 @@ canvas {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh; /* Same size as the canvas */
-  z-index: 1; /* Ensures content is above the canvas */
-  color: white; /* Choose a color that contrasts with the canvas */
+  height: 100vh;
+  z-index: 1;
+  color: white;
   display: flex;
-  flex-direction: column; /* Stack children vertically */
+  flex-direction: column;
   justify-content: center;
-  align-items: center; /* Center content horizontally */
-  text-align: center; /* Center the content */
+  align-items: center;
+  text-align: center;
 }
 
 .additional-content {
   position: relative;
-  z-index: 2; /* Above the canvas and its overlay */
-  background-color: #fff; /* Or any color you prefer */
-  /* Additional styling for the content below */
+  z-index: 2;
+  background-color: #fff;
 }
 
-/* Additional styling for the heading */
-h1 {
-  font-size: 3em;
-  margin-top: 0;
+/* Animation optimizations - use transform and opacity for smooth animations */
+@keyframes moveRightToLeft {
+  0% { transform: translateX(100vw) rotate(-90deg); }
+  100% { transform: translateX(-200vw) rotate(-90deg); }
 }
 
-.nav-links {
-  display: flex;
-  justify-content: center;
-  gap: 20px; /* Adjust the gap as needed */
-  margin-top: 10px; /* Adjust the margin as needed */
+@keyframes moveLeftToRight {
+  0% { transform: translateX(-2vw) rotate(90deg); }
+  100% { transform: translateX(200vw) rotate(90deg); }
 }
 
-.nav-link {
-  text-decoration: none;
-  color: white; /* Adjust the color as needed */
-  padding: 10px; /* Adjust the padding as needed */
-}
-
-.nav-link:hover {
-  text-decoration: underline;
-}
-
-/* Ensure the rest of the content starts after the canvas */
-.additional-content {
-  margin-top: 100vh; /* Height of the viewport */
-}
-
-body {
-  margin: 0;
-}
-
-canvas {
-  width: 100%;
-  height: 100%;
-}
-
+/* Image and slider optimizations */
 #image-slider {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 33.33vh; /* Top 1/3 of the viewport */
+  height: 33.33vh;
   overflow: hidden;
 }
 
 .title-banner {
   position: absolute;
-  top: 33.33vh; /* Starts right after image-slider */
+  top: 33.33vh;
   left: 0;
   width: 100%;
-  height: 33.33vh; /* Next 1/3 of the viewport */
+  height: 33.33vh;
   overflow: hidden;
 }
 
 .image {
   position: absolute;
-  width: 20px; /* Adjust as needed */
-  height: 20px; /* Adjust as needed */
-  animation-duration: 120s; /* Adjust as needed */
+  width: 20px;
+  height: 20px;
+  animation-duration: 120s;
   animation-timing-function: linear;
   animation-iteration-count: 1;
+  will-change: transform; /* Hardware acceleration hint */
 }
 
 .move-right-to-left {
@@ -108,60 +86,191 @@ canvas {
   animation-name: moveLeftToRight;
 }
 
-@keyframes moveRightToLeft {
-  0% { transform: translateX(100vw) rotate(-90deg); } /* Rotate left 90 degrees */
-  100% { transform: translateX(-200vw) rotate(-90deg); }
-}
-
-@keyframes moveLeftToRight {
-  0% { transform: translateX(-2vw) rotate(90deg); } /* Rotate right 90 degrees */
-  100% { transform: translateX(200vw) rotate(90deg); }
-}
-
-.body-content{
+.body-content {
   z-index: 2;
 }
 
-/* css/style.css or a new css file */
-/* The Modal (background) */
+/* Modal optimizations */
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  display: none;
+  position: fixed;
+  z-index: 1000;
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-/* Modal Content/Box */
+.modal.show {
+  opacity: 1;
+}
+
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
+  width: 80%;
   position: relative;
+  transform: translateY(-20px);
+  transition: transform 0.3s ease;
 }
 
-/* The Close Button */
+.modal.show .modal-content {
+  transform: translateY(0);
+}
+
 .close {
   position: absolute;
   top: 0;
   right: 0;
   color: #aaa;
-  float: right;
   font-size: 28px;
   font-weight: bold;
   margin: 5px;
+  cursor: pointer;
 }
 
-.close:hover,
-.close:focus {
+.close:hover {
   color: black;
+}
+
+/* Navigation optimizations */
+#animated-nav {
+  position: fixed;
+  z-index: 100;
+  transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+  padding: 15px 20px;
+  pointer-events: auto;
+}
+
+/* Center positioning (for home page) */
+#animated-nav.nav-center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: transparent;
+}
+
+#animated-nav.nav-center .nav-title {
+  font-size: 3em;
+  margin-bottom: 20px;
+  color: white;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+#animated-nav.nav-center .nav-links {
+  gap: 20px;
+  display: flex;
+}
+
+/* Top-left positioning */
+#animated-nav.nav-top-left {
+  top: 20px;
+  left: 20px;
+  transform: translate(0, 0);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+#animated-nav.nav-top-left .nav-title {
+  font-size: 1.5em;
+  margin-right: 20px;
+  margin-bottom: 0;
+  color: white;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+#animated-nav.nav-top-left .nav-links {
+  gap: 15px;
+  display: flex;
+}
+
+#animated-nav .nav-title-link {
+  color: white;
   text-decoration: none;
-  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+#animated-nav .nav-title-link:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  transition: width 0.3s ease;
+}
+
+#animated-nav .nav-title-link:hover:after {
+  width: 100%;
+}
+
+#animated-nav .nav-link {
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 5px 10px;
+  position: relative;
+}
+
+#animated-nav .nav-link:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  transition: width 0.3s ease;
+}
+
+#animated-nav .nav-link:hover:after,
+#animated-nav .nav-link.active-link:after {
+  width: 100%;
+}
+
+/* Media queries for better responsiveness */
+@media (max-width: 768px) {
+  #animated-nav.nav-center .nav-title {
+    font-size: 2em;
+  }
+  
+  #animated-nav.nav-top-left {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  #animated-nav.nav-top-left .nav-title {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
+
+/* Print styles to save ink and format properly when printing */
+@media print {
+  canvas, 
+  .canvas-overlay,
+  #animated-nav.nav-center {
+    display: none !important;
+  }
+  
+  body, html {
+    background-color: #fff;
+    color: #000;
+  }
 }

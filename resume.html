@@ -9,13 +9,23 @@
   <link rel="stylesheet" href="./styles/template.css">
 </head>
 <body>
+  <!-- Animated Navigation Component with top-left positioning -->
+  <div id="animated-nav" class="nav-top-left">
+    <h1 class="nav-title">
+      <a href="index.html" class="nav-title-link">Kyle Mathias</a>
+    </h1>
+    <div class="nav-links">
+      <a href="resume.html" class="nav-link" id="resume-link">Resume</a>
+      <a href="contact.html" class="nav-link" id="contact-link">Contact</a>
+    </div>
+  </div>
+
   <!-- Canvas for 3D background -->
   <canvas id="3D-background-three-canvas5"></canvas>
 
-  <!-- Placeholder until scripts load -->
-  <div class="container mx-auto mt-12">
-    <h1 class="text-3xl font-bold">Resume</h1>
-    <p>Loading resume information...</p>
+  <!-- Page content container -->
+  <div id="page-content" class="content-container">
+    <!-- Content will be loaded here by template-injector.js -->
   </div>
 
   <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/103/three.min.js'></script>
@@ -26,6 +36,7 @@
   <script src="./js/site-config.js"></script>
   <script src="./js/3d-hero-background.js"></script>
   <script src="./js/template-injector.js"></script>
+  <script src="./js/nav-animation.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       injectTemplate('resume');
