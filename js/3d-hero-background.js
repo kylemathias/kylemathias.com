@@ -7,15 +7,24 @@
     render();
   };
 
-  // Use a progressive loading approach
+  // Use a progressive loading approach with delayed initialization
   document.addEventListener('DOMContentLoaded', function() {
     // Only initialize if the canvas element exists
     if (document.getElementById('3D-background-three-canvas5')) {
-      // First render the page, then load the heavy 3D effect
-      setTimeout(function() {
-        init();
-        render();
-      }, 500); // Increased delay to prioritize other content
+      // Wait for critical content to render before initializing heavy 3D effect
+      if ('requestIdleCallback' in window) {
+        // Use requestIdleCallback for modern browsers
+        requestIdleCallback(function() {
+          init();
+          render();
+        }, { timeout: 2000 }); // 1 second timeout as fallback
+      } else {
+        // Fallback for browsers without requestIdleCallback
+        setTimeout(function() {
+          init();
+          render();
+        }, 400); 
+      }
     }
   });
 
@@ -35,7 +44,7 @@
     return path === '' || path === 'index.html';
   }
 
-  // Make sure these functions are available to the rest of the code
+  // Make functions available to the rest of the code
   window.isTemplatePage = isTemplatePage;
   window.isHomepage = isHomepage;
 
@@ -50,16 +59,31 @@
 
   var geometry, plane, simplex;
 
-  // Significantly reduced values for better performance
-  var factor = 300,
-    speed = 0.0003,  // Reduced for better performance
-    cycle = 0.0000001,
-    scale = 20;      // Reduced complexity
+  // Further reduced values for even better performance
+  var factor = 250, // Changed from 300 for more interesting wave patterns
+    speed = 0.0004, // Slightly increased for smoother movement
+    cycle = 0.0001,
+    scale = 25, // Increased from 20 for more pronounced waves
+    secondaryScale = 10, // Added for multi-layered waves
+    secondaryFactor = 600; // Added for multi-layered waves
 
-  // Further reduce star count for better performance
-  var starCount = isTemplatePage() ? 5000 : 3500;
+  // Progressive enhancement: fewer stars on mobile devices
+  var starCount = (function() {
+    if (window.innerWidth < 768) {
+      // Much fewer stars on mobile
+      return isTemplatePage() ? 3000 : 2000;
+    } else {
+      // Default for larger screens
+      return isTemplatePage() ? 5000 : 3500;
+    }
+  })();
 
   function init() {
+    // Only continue if the canvas element exists
+    if (!document.getElementById(rendererCanvasID)) {
+      return;
+    }
+
     //camera
     camera = new THREE.PerspectiveCamera(
       60,
@@ -72,7 +96,7 @@
     //Scene
     scene = new THREE.Scene();
 
-    // Different lighting for template pages vs home page - with reduced intensity
+    // Different lighting for template pages vs home page - with reduced intensity for better performance
     if (isTemplatePage()) {
       lights[0] = new THREE.PointLight(0x554488, 0.7, 0); 
       lights[1] = new THREE.PointLight(0x6655aa, 0.7, 0);
@@ -101,7 +125,12 @@
       preserveDrawingBuffer: false // Better performance
     });
     renderer.setSize(windowWidth, windowHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Limit pixel ratio for performance
+    
+    // Limit pixel ratio more aggressively on mobile for better performance
+    const pixelRatio = window.innerWidth < 768 ? 
+                        Math.min(window.devicePixelRatio, 1) : 
+                        Math.min(window.devicePixelRatio, 1.5);
+    renderer.setPixelRatio(pixelRatio);
 
     // Enhanced starfield that's visible on all pages - with reduced complexity
     var starGeometry = new THREE.Geometry();
@@ -142,16 +171,20 @@
       group.position.set(0, -300, -1000);
       group.rotation.set(29.8, 0, 0);
 
-      // Significantly reduced geometry complexity for better performance
-      geometry = new THREE.PlaneGeometry(4000, 2000, 64, 32); // Further reduced segments
+      // Higher resolution grid with conditional scaling based on device performance
+      const segmentsX = window.innerWidth < 768 ? 96 : 192;
+      const segmentsY = window.innerWidth < 768 ? 48 : 96;
+      geometry = new THREE.PlaneGeometry(4000, 2000, segmentsX, segmentsY);
+      
       material = new THREE.MeshLambertMaterial({
-        color: 0xffffff,
+        color: 0x76e4f7, // A pleasing blue color for the grid
         opacity: 1,
         blending: THREE.NoBlending,
         side: THREE.FrontSide,
         transparent: false,
         depthTest: true,
         wireframe: true,
+        wireframeLinewidth: 2, // Increased line thickness for better detail
       });
       plane = new THREE.Mesh(geometry, material);
       plane.position.set(0, 0, 0);
@@ -168,14 +201,14 @@
       camera.position.z = 150;  // Position camera a bit further back
     }
 
-    // Throttled event listener for better performance
+    // Throttled resize handler with debounce for better performance
     let resizeTimeout;
     window.addEventListener("resize", function() {
       if (!resizeTimeout) {
         resizeTimeout = setTimeout(function() {
           resizeTimeout = null;
           onWindowResize();
-        }, 200); // Increased delay for throttling
+        }, 250); // Further increased delay for throttling
       }
     }, false);
   }
@@ -183,10 +216,17 @@
   // Variables for camera movement on template pages
   var cameraMovementAngle = 0;
   var lastFrameTime = 0;
-  var fps = 30; // Limit to 30fps for better performance
+  
+  // Reduce fps on mobile devices
+  var fps = window.innerWidth < 768 ? 20 : 30;
   var fpsInterval = 1000 / fps;
 
   function render(timestamp) {
+    // Skip rendering if canvas doesn't exist
+    if (!document.getElementById(rendererCanvasID)) {
+      return;
+    }
+    
     requestAnimationFrame(render);
 
     // Throttle to desired fps for better performance
@@ -223,15 +263,34 @@
     camera.aspect = windowWidth / windowHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(windowWidth, windowHeight);
+    
+    // Update pixel ratio on resize
+    const pixelRatio = window.innerWidth < 768 ? 
+                        Math.min(window.devicePixelRatio, 1) : 
+                        Math.min(window.devicePixelRatio, 1.5);
+    renderer.setPixelRatio(pixelRatio);
+    
+    // Update fps based on screen size
+    fps = window.innerWidth < 768 ? 20 : 30;
+    fpsInterval = 1000 / fps;
   }
 
   function moveNoise() {
     for (let i = 0; i < geometry.vertices.length; i++) {
       let vertex = geometry.vertices[i];
+      
+      // Primary wave pattern
       let xoff = vertex.x / factor;
       let yoff = vertex.y / factor + cycle;
-      let rand = simplex.noise2D(xoff, yoff) * scale;
-      vertex.z = rand;
+      let primaryWave = simplex.noise2D(xoff, yoff) * scale;
+      
+      // Secondary wave pattern (smaller, faster waves)
+      let x2 = vertex.x / secondaryFactor;
+      let y2 = vertex.y / secondaryFactor + (cycle * 1.5);
+      let secondaryWave = simplex.noise2D(x2, y2) * secondaryScale;
+      
+      // Combine waves for more interesting patterns
+      vertex.z = primaryWave + secondaryWave;
     }
     
     geometry.verticesNeedUpdate = true;

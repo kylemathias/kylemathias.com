@@ -40,6 +40,7 @@ function createImage() {
     const img = document.createElement('img');
     let randomIndex = Math.floor(Math.random() * images.length);
     img.src = images[randomIndex];
+    img.alt = imageNames[randomIndex]; // Add alt text for accessibility
     img.classList.add('image');
     
     // Calculate a random top position within visible bounds

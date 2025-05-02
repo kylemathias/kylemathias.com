@@ -1,46 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resume | Kyle Mathias</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-  <link rel="stylesheet" href="./styles/main.css">
-  <link rel="stylesheet" href="./styles/template.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kyle Mathias' professional resume and qualifications in web development and creative technology.">
+    <meta name="keywords" content="Kyle Mathias, resume, web developer, creative technologist, portfolio">
+    <title>Resume | Kyle Mathias</title>
+    
+    <!-- Preconnect to critical origins -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Preload critical CSS and JS -->
+    <link rel="preload" href="./styles/main.css" as="style">
+    <link rel="stylesheet" href="./styles/main.css">
+    <link rel="preload" href="./js/site-config.js" as="script">
+    
+    <!-- Inline critical navigation styles for immediate rendering -->
+    <style>
+        /* Critical navigation styles */
+        body, html {
+          margin: 0;
+          padding: 0;
+          background-color: #000;
+          color: #fff;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          overscroll-behavior: none;
+        }
+        
+        #animated-nav {
+          position: fixed;
+          z-index: 100;
+          transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+          padding: 15px 20px;
+          pointer-events: auto;
+        }
+        
+        #animated-nav.nav-top-left {
+          top: 20px;
+          left: 20px;
+          background-color: rgba(0, 0, 0, 0.7);
+          border-radius: 5px;
+        }
+        
+        #animated-nav .nav-links {
+          gap: 20px;
+          display: flex;
+        }
+        
+        #animated-nav .nav-link {
+          position: relative;
+          text-decoration: none;
+          color: #fff;
+          padding: 5px 10px;
+        }
+        
+        #animated-nav .nav-link:after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 2px;
+          bottom: 0;
+          left: 0;
+          background-color: white;
+          transition: width 0.3s ease;
+        }
+        
+        #animated-nav .nav-link:hover:after,
+        #animated-nav .nav-link.active-link:after {
+          width: 100%;
+        }
+        
+        #page-content {
+          margin-top: 80px;
+          color: white;
+          padding: 20px;
+          max-width: 800px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        
+        .resume-content h2 {
+          margin-top: 2em;
+          font-size: 1.5em;
+        }
+        
+        .resume-content ul {
+          padding-left: 1.2em;
+          margin-bottom: 2em;
+        }
+        
+        .resume-content li {
+          margin-bottom: 1em;
+          font-size: 1.1em;
+        }
+    </style>
 </head>
+
 <body>
-  <!-- Animated Navigation Component with top-left positioning -->
-  <div id="animated-nav" class="nav-top-left">
-    <h1 class="nav-title">
-      <a href="index.html" class="nav-title-link">Kyle Mathias</a>
-    </h1>
-    <div class="nav-links">
-      <a href="resume.html" class="nav-link" id="resume-link">Resume</a>
-      <a href="contact.html" class="nav-link" id="contact-link">Contact</a>
+    <!-- Animated Navigation Component with top-left positioning -->
+    <div id="animated-nav" class="nav-top-left">
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Kyle Mathias</a>
+            <a href="resume.html" class="nav-link active-link" id="resume-link">Resume</a>
+            <a href="contact.html" class="nav-link" id="contact-link">Contact</a>
+        </div>
     </div>
-  </div>
 
-  <!-- Canvas for 3D background -->
-  <canvas id="3D-background-three-canvas5"></canvas>
+    <!-- Page content container - moved before canvas for better LCP -->
+    <div id="page-content" class="content-container">
+        <h1 class="mb-4">Resume</h1>
+        <div class="resume-content">
+            <h2>Professional Experience</h2>
+            <ul>
+                <li><strong>Web Developer</strong> – Example Company (2021–Present)<br>Developed and maintained responsive web applications using modern JavaScript frameworks.</li>
+                <li><strong>Creative Technologist</strong> – Creative Studio (2018–2021)<br>Led interactive installations and digital experiences for clients in various industries.</li>
+            </ul>
+            <h2>Skills</h2>
+            <ul>
+                <li>JavaScript, HTML5, CSS3, WebGL, Three.js</li>
+                <li>UI/UX Design, Creative Coding, Animation</li>
+                <li>Bootstrap, Tailwind, Responsive Design</li>
+            </ul>
+            <h2>Education</h2>
+            <ul>
+                <li>B.Sc. in Computer Science – University Name (2014–2018)</li>
+            </ul>
+        </div>
+    </div>
 
-  <!-- Page content container -->
-  <div id="page-content" class="content-container">
-    <!-- Content will be loaded here by template-injector.js -->
-  </div>
+    <!-- Canvas for 3D background - loaded after critical content -->
+    <canvas id="3D-background-three-canvas5"></canvas>
 
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/103/three.min.js'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js'></script>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-  <script src="./js/site-config.js"></script>
-  <script src="./js/3d-hero-background.js"></script>
-  <script src="./js/template-injector.js"></script>
-  <script src="./js/nav-animation.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      injectTemplate('resume');
-    });
-  </script>
+    <!-- Core scripts with defer for non-blocking loading -->
+    <script src="./js/site-config.js" defer></script>
+    
+    <!-- Secondary non-critical scripts loaded in optimized order -->
+    <script src="./js/jquery.slim.min.js" defer></script>
+    <script src="./js/bootstrap.min.js" defer></script>
+    
+    <!-- Visual effects scripts loaded last -->
+    <script src="./js/three.min.js" defer></script>
+    <script src="./js/simplex-noise.min.js" defer></script>
+    <script src="./js/3d-hero-background.js" defer></script>
+    <script src="./js/nav-animation.js" defer></script>
 </body>
+
 </html>
