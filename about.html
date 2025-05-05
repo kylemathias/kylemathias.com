@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="About Kyle Mathias - Learn more about my background, interests, and professional journey.">
+    <meta name="keywords" content="Kyle Mathias, about, web developer, creative technologist, portfolio">
+    <title>About | Kyle Mathias</title>
+    
+    <!-- Preconnect to critical origins -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Preload critical CSS and JS -->
+    <link rel="preload" href="./styles/main.css" as="style">
+    <link rel="stylesheet" href="./styles/main.css">
+    <link rel="preload" href="./js/site-config.js" as="script">
+    
+    <!-- Inline critical navigation styles for immediate rendering -->
+    <style>
+        /* Critical navigation styles */
+        body, html {
+          margin: 0;
+          padding: 0;
+          background-color: #000;
+          color: #fff;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          overscroll-behavior: none;
+        }
+        
+        #animated-nav {
+          position: fixed;
+          z-index: 100;
+          transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+          padding: 15px 20px;
+          pointer-events: auto;
+        }
+        
+        #animated-nav.nav-top-left {
+          top: 20px;
+          left: 20px;
+          background-color: rgba(0, 0, 0, 0.7);
+          border-radius: 5px;
+        }
+        
+        #animated-nav .nav-header {
+          margin-right: 20px;
+          margin-bottom: 0;
+        }
+        
+        #animated-nav .nav-header-link {
+          font-size: 1.5em;
+          color: white;
+          text-decoration: none;
+          transition: all 0.5s ease;
+        }
+        
+        #animated-nav .nav-links {
+          gap: 15px;
+          display: flex;
+        }
+        
+        #animated-nav .nav-link {
+          position: relative;
+          text-decoration: none;
+          color: #fff;
+          padding: 5px 10px;
+        }
+        
+        #animated-nav .nav-link:after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 2px;
+          bottom: 0;
+          left: 0;
+          background-color: white;
+          transition: width 0.3s ease;
+        }
+        
+        #animated-nav .nav-link:hover:after,
+        #animated-nav .nav-link.active-link:after {
+          width: 100%;
+        }
+        
+        /* Mobile menu styles */
+        @media (max-width: 768px) {
+          #animated-nav.nav-top-left {
+            width: 100%;
+            left: 0;
+            top: 0;
+            padding: 15px;
+            border-radius: 0;
+          }
+          
+          #mobile-nav-toggle {
+            display: block;
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+          }
+          
+          #mobile-nav-toggle span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            margin: 5px 0;
+            background-color: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+          }
+          
+          #mobile-nav-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+          }
+          
+          #mobile-nav-toggle.active span:nth-child(2) {
+            opacity: 0;
+          }
+          
+          #mobile-nav-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+          }
+          
+          /* Hide navigation elements by default on mobile */
+          #animated-nav.nav-top-left .nav-header,
+          #animated-nav.nav-top-left .nav-links {
+            display: none;
+          }
+          
+          /* Show all navigation elements when mobile menu is open */
+          #animated-nav.nav-top-left.mobile-menu-open {
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.95);
+          }
+          
+          #animated-nav.nav-top-left.mobile-menu-open .nav-header,
+          #animated-nav.nav-top-left.mobile-menu-open .nav-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+          }
+          
+          #animated-nav.nav-top-left.mobile-menu-open .nav-header {
+            margin-bottom: 20px;
+            margin-top: 40px;
+          }
+          
+          #animated-nav.nav-top-left.mobile-menu-open .nav-links {
+            margin-top: 10px;
+          }
+          
+          #animated-nav.nav-top-left.mobile-menu-open .nav-link {
+            margin: 10px 0;
+            font-size: 1.3em;
+          }
+        }
+        
+        #page-content {
+          margin-top: 80px;
+          color: white;
+          padding: 20px;
+          max-width: 800px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        
+        .about-content h2 {
+          margin-top: 2em;
+          font-size: 1.5em;
+        }
+        
+        .about-content p {
+          line-height: 1.6;
+          margin-bottom: 1.5em;
+          font-size: 1.1em;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Animated Navigation Component with top-left positioning -->
+    <div id="animated-nav" class="nav-top-left">
+        <button id="mobile-nav-toggle" aria-label="Toggle mobile menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="nav-header">
+            <a href="index.html" class="nav-header-link">Kyle Mathias</a>
+        </div>
+        <div class="nav-links">
+            <a href="about.html" class="nav-link active-link" id="about-link">About</a>
+            <a href="resume.html" class="nav-link" id="resume-link">Resume</a>
+            <a href="contact.html" class="nav-link" id="contact-link">Contact</a>
+        </div>
+    </div>
+
+    <!-- Page content container - moved before canvas for better LCP -->
+    <div id="page-content" class="content-container">
+        <h1 class="mb-4">About Me</h1>
+        <div class="about-content">
+            <h2>About Me</h2>
+            <p>
+                From building computers out of recycled parts with my dad as a kid, I’ve always been drawn to creating things that make life easier. My journey into tech started early, and I found my way into marketing as a gateway to technology roles. Over time, I carved out a niche as a Marketing Technology Specialist, where I thrive on bridging the gap between people and technology.
+            </p>
+            <p>
+                A pivotal moment in my career came when I was tasked with QA for a large-scale web redesign. I developed a system to scan and check hundreds of pages in multiple languages, streamlining the process and opening doors to more impactful projects. Since then, I’ve focused on building intuitive tools and automations that make teams more efficient—like a web scraping tool that saved my company $500k a year and is still in use years later.
+            </p>
+            <p>
+                My approach is simple: start with the end goal, work backwards, and always keep the user’s needs front and center. I’m known for driving projects to completion with little oversight, organizing requirements, and finding solutions even when the path isn’t obvious. Colleagues describe me as proactive, organized, and easy to work with—someone who brings humor and kindness to every project.
+            </p>
+            <p>
+                Outside of work, I enjoy time with my family, tackling home projects, and helping others with technology. I’m passionate about continuous learning, especially in areas like AI and client-facing web development, and I believe the best results come from teams that collaborate, learn, and grow together.
+            </p>
+        </div>
+    </div>
+
+    <!-- Canvas for 3D background - loaded after critical content -->
+    <canvas id="3D-background-three-canvas5"></canvas>
+
+    <!-- Core scripts with defer for non-blocking loading -->
+    <script src="./js/site-config.js" defer></script>
+    
+    <!-- Secondary non-critical scripts loaded in optimized order -->
+    <script src="./js/jquery.slim.min.js" defer></script>
+    <script src="./js/bootstrap.min.js" defer></script>
+    
+    <!-- Visual effects scripts loaded last -->
+    <script src="./js/three.min.js" defer></script>
+    <script src="./js/simplex-noise.min.js" defer></script>
+    <script src="./js/3d-hero-background.js" defer></script>
+    <script src="./js/nav-animation.js" defer></script>
+</body>
+
+</html>

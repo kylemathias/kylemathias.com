@@ -36,7 +36,7 @@
   // More efficient page type detection
   function isTemplatePage() {
     const path = window.location.pathname.split('/').pop();
-    return path === 'resume.html' || path === 'contact.html' || path.includes('template.html');
+    return path === 'resume.html' || path === 'contact.html' || path === 'about.html' || path.includes('template.html');
   }
 
   function isHomepage() {

@@ -47,6 +47,19 @@
           background-color: transparent;
         }
         
+        #animated-nav .nav-header {
+          margin-bottom: 25px;
+          text-align: center;
+        }
+        
+        #animated-nav .nav-header-link {
+          font-size: 3em;
+          color: white;
+          text-decoration: none;
+          position: relative;
+          transition: all 0.5s ease;
+        }
+        
         #animated-nav .nav-links {
           gap: 20px;
           display: flex;
@@ -95,8 +108,12 @@
 <body>
     <!-- Animated Navigation Component with center positioning -->
     <div id="animated-nav" class="nav-center">
+        <div class="nav-header">
+            <a href="index.html" class="nav-header-link active-link">Kyle Mathias</a>
+            <h5>Technical Program Specialist | Web, Automation, & App Development</h5>
+        </div>
         <div class="nav-links">
-            <a href="index.html" class="nav-link active-link">Kyle Mathias</a>
+            <a href="about.html" class="nav-link" id="about-link">About</a>
             <a href="resume.html" class="nav-link" id="resume-link">Resume</a>
             <a href="contact.html" class="nav-link" id="contact-link">Contact</a>
         </div>
