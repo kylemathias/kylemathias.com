@@ -53,6 +53,22 @@
           color: white;
           text-decoration: none;
           transition: all 0.5s ease;
+          position: relative;
+        }
+        
+        #animated-nav .nav-header-link:after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 2px;
+          bottom: 0;
+          left: 0;
+          background: linear-gradient(135deg, #1e3a8a, #0ea5e9);
+          transition: width 0.3s ease;
+        }
+        
+        #animated-nav .nav-header-link:hover:after {
+          width: 100%;
         }
         
         #animated-nav .nav-links {
@@ -74,7 +90,7 @@
           height: 2px;
           bottom: 0;
           left: 0;
-          background-color: white;
+          background: linear-gradient(135deg, #1e3a8a, #0ea5e9);
           transition: width 0.3s ease;
         }
         

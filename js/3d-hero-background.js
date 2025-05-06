@@ -121,7 +121,7 @@
       alpha: true,
       antialias: false,  // False for better performance
       precision: 'mediump', // Medium precision for better performance
-      powerPreference: 'high-performance',
+      // Use default power preference to ensure Firefox compatibility
       preserveDrawingBuffer: false // Better performance
     });
     renderer.setSize(windowWidth, windowHeight);
