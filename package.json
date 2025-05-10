@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.9.0",
+    "@smithery/sdk": "^1.0.4"
+  },
+  "scripts": {
+    "build:css": "npx tailwindcss -i ./styles/tailwind.css -o ./styles/main.css --minify"
+  }
+}

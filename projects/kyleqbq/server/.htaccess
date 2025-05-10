@@ -1,4 +1,0 @@
-# This Directive will make Apache look first
-# for "index_good.html" before looking for "index.html"
-DirectoryIndex index_good.html index.html
-deny from all
