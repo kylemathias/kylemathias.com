@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Kyle Mathias' professional resume and qualifications in web development and creative technology.">
-    <meta name="keywords" content="Kyle Mathias, resume, web developer, creative technologist, portfolio">
+    <meta name="description" content="Kyle Mathias - Resume">
+    <meta name="keywords" content="Kyle Mathias, resume, CV, experience, skills, portfolio">
     <title>Resume | Kyle Mathias</title>
     
     <!-- Preconnect to critical origins -->
@@ -16,7 +16,6 @@
     <link rel="stylesheet" href="./styles/main.css">
     <link rel="preload" href="./js/site-config.js" as="script">
     
-    <!-- Inline critical navigation styles for immediate rendering -->
     <style>
         /* Critical navigation styles */
         body, html {
@@ -176,7 +175,7 @@
             font-size: 1.3em;
           }
         }
-        
+
         #page-content {
           margin-top: 80px;
           color: white;
@@ -186,19 +185,70 @@
           margin-right: auto;
         }
         
-        .resume-content h2 {
-          margin-top: 2em;
-          font-size: 1.5em;
+        .resume-container {
+          background-color: rgba(0, 0, 0, 0.5);
+          border-radius: 8px;
+          padding: 25px;
+          margin-top: 30px;
+          margin-bottom: 40px;
+          text-align: center;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .download-btn {
+          display: inline-flex;
+          align-items: center;
+          background: linear-gradient(135deg, #6e8efb 0%, #4a6cf7 100%);
+          color: white;
+          padding: 12px 25px;
+          border-radius: 30px;
+          text-decoration: none;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          border: none;
+          margin-top: 15px;
+          margin-bottom: 20px;
+          cursor: pointer;
+        }
+
+        .download-btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 7px 14px rgba(0, 0, 0, 0.25);
+          color: white;
+          text-decoration: none;
+        }
+
+        .download-btn svg {
+          margin-right: 10px;
+        }
+
+        .resume-date {
+          font-style: italic;
+          color: #aaa;
+          margin-bottom: 15px;
+          display: block;
         }
         
-        .resume-content ul {
-          padding-left: 1.2em;
-          margin-bottom: 2em;
+        .pdf-container {
+          width: 100%;
+          max-width: 800px;
+          margin: 0 auto;
+          height: 800px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 4px;
+          overflow: hidden;
+          background-color: rgba(0, 0, 0, 0.3);
         }
         
-        .resume-content li {
-          margin-bottom: 1em;
-          font-size: 1.1em;
+        .pdf-container object {
+          background-color: white;
+        }
+        
+        @media (max-width: 768px) {
+          .pdf-container {
+            height: 500px;
+          }
         }
     </style>
 </head>
@@ -224,40 +274,47 @@
     <!-- Page content container - moved before canvas for better LCP -->
     <div id="page-content" class="content-container">
         <h1 class="mb-4">Resume</h1>
-        <div class="resume-content">
-            <h2>Professional Experience</h2>
-            <ul>
-                <li><strong>Web Developer</strong> – Example Company (2021–Present)<br>Developed and maintained responsive web applications using modern JavaScript frameworks.</li>
-                <li><strong>Creative Technologist</strong> – Creative Studio (2018–2021)<br>Led interactive installations and digital experiences for clients in various industries.</li>
-            </ul>
-            <h2>Skills</h2>
-            <ul>
-                <li>JavaScript, HTML5, CSS3, WebGL, Three.js</li>
-                <li>UI/UX Design, Creative Coding, Animation</li>
-                <li>Bootstrap, Tailwind, Responsive Design</li>
-            </ul>
-            <h2>Education</h2>
-            <ul>
-                <li>B.Sc. in Computer Science – University Name (2014–2018)</li>
-            </ul>
+
+        <!-- Resume Download Section -->
+        <div class="resume-container">
+            <!-- Resume date -->
+            <span class="resume-date">Last updated: May 5, 2025</span>
+            
+            <!-- Download button with icon -->
+            <a href="assets/KyleMathiasResume5-5-2025.pdf" class="download-btn" download>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                </svg>
+                Download Resume
+            </a>
+            
+            <!-- PDF Viewer -->
+            <div class="pdf-container">
+                <object data="assets/KyleMathiasResume5-5-2025.pdf" type="application/pdf" width="100%" height="100%">
+                    <p>It appears your browser doesn't support embedded PDFs. 
+                    <a href="assets/KyleMathiasResume5-5-2025.pdf">Click here to download my resume instead.</a></p>
+                </object>
+            </div>
         </div>
     </div>
 
     <!-- Canvas for 3D background - loaded after critical content -->
     <canvas id="3D-background-three-canvas5"></canvas>
 
-    <!-- Core scripts with defer for non-blocking loading -->
-    <script src="./js/site-config.js" defer></script>
-    
-    <!-- Secondary non-critical scripts loaded in optimized order -->
-    <script src="./js/jquery.slim.min.js" defer></script>
-    <script src="./js/bootstrap.min.js" defer></script>
-    
-    <!-- Visual effects scripts loaded last -->
+    <!-- Scripts -->
+    <script src="js/jquery.slim.min.js" defer></script>
+    <script src="js/bootstrap.min.js" defer></script>
     <script src="./js/three.min.js" defer></script>
     <script src="./js/simplex-noise.min.js" defer></script>
     <script src="./js/3d-hero-background.js" defer></script>
     <script src="./js/nav-animation.js" defer></script>
+    <script>
+        // Track resume downloads
+        document.querySelector('.download-btn').addEventListener('click', function() {
+            console.log('Resume downloaded');
+            // You could add analytics tracking here if desired
+        });
+    </script>
 </body>
-
 </html>
